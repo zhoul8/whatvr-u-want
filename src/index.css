@@ -1,0 +1,39 @@
+.myCard{
+  border: 2px solid rgb(37, 9, 76);
+  border-radius: 10px;
+  box-shadow: 5px 5px 5px rgb(113, 94, 207);
+  padding: 10px;
+  text-align: center;
+  display: inline-block;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.myCard .cardPic{
+  max-width: 80%;
+  border-radius: 10%;
+}
+
+ul{
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  list-style-type: none;
+  gap: 30px;
+  flex-wrap: wrap;
+  background-color:rgba(100, 148, 237, 0.706);
+}
+
+ul li a:hover{
+  background-color: blue;
+  color:rgb(47, 12, 116);
+  padding:10px
+}
+
+.footer{
+  background-color: rgba(0, 255, 255, 0.382);
+  color:rgb(51, 63, 63);
+  position: fixed;
+  bottom:0px;
+  padding: 40px;
+  justify-content:center;
+}
