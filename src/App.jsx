@@ -130,7 +130,7 @@ function App() {
 {apiData && <img src={apiData} alt="Random Dog" />}
 
 <button onClick={fetchJoke}>Fetch joke</button>
-{apiData && <p>{apiData}</p>}
+{apiData && <p src={apiData}></p>}
 
 
       {user ? (
