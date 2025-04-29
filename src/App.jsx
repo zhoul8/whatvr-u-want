@@ -1,85 +1,135 @@
-// Import React hooks and Firebase functionality
+
 import { useEffect, useState } from 'react';
-import { db, auth, provider } from './firebase'; // Custom Firebase config
-import { signInWithPopup, signOut, onAuthStateChanged } from 'firebase/auth'; // Auth methods
-import { collection, getDocs } from 'firebase/firestore'; // Firestore methods
+import { db, auth, provider } from './firebase';
+import { signInWithPopup, signOut, onAuthStateChanged } from 'firebase/auth';
+import { collection, addDoc, getDocs, doc, setDoc, getDoc} from 'firebase/firestore';
 
 function App() {
-  // State to hold the logged-in user
+  // Track logged-in user
   const [user, setUser] = useState(null);
 
-  // State to hold messages from Firestore
+  // Profile fields for editing
+  const [nickname, setNickname] = useState('');
+  const [age, setAge] = useState('');
+
+  // Message input and stored messages
+  const [input, setInput] = useState('');
   const [messages, setMessages] = useState([]);
 
-  // Monitor authentication status (e.g., login/logout) in real time
+  // Listen for authentication changes
   useEffect(() => {
-    // Set up a listener that triggers every time the auth state changes
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser); // Update the user state with the logged-in user
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      setUser(currentUser);
+
+      // If user is logged in, load their profile and messages
+      if (currentUser) {
+        const userDocRef = doc(db, 'users', currentUser.uid);
+        const docSnap = await getDoc(userDocRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          setNickname(data.nickname || '');
+          setAge(data.age || '');
+        }
+        fetchMessages();
+      }
     });
 
-    // Clean up the listener when the component unmounts
     return () => unsubscribe();
   }, []);
 
-  // Handle Google login using a popup window
+  // Google sign-in
   const handleLogin = async () => {
     try {
-      await signInWithPopup(auth, provider); // Triggers Google login flow
+      await signInWithPopup(auth, provider);
     } catch (error) {
-      console.error('Login failed', error); // Catch and display any login errors
+      console.error('Login failed', error);
     }
   };
 
-  // Handle logout for the authenticated user
+  // Sign out
   const handleLogout = async () => {
     try {
-      await signOut(auth); // Signs out the current user
-      setUser(null); // Clear the user from local state
+      await signOut(auth);
+      setUser(null);
+      setNickname('');
+      setAge('');
     } catch (error) {
-      console.error('Logout failed', error); // Catch and display logout errors
+      console.error('Logout failed', error);
     }
   };
 
-  // Fetch all messages from the "messages" collection in Firestore
-  const fetchMessages = async () => {
-    const snapshot = await getDocs(collection(db, 'messages')); // Get all documents
-    const list = snapshot.docs.map(doc => doc.data()); // Convert docs to plain JS objects
-    setMessages(list); // Update the messages state
+  // Save nickname and age to Firestore
+  const handleSaveProfile = async () => {
+    if (!nickname || !age) {
+      alert('Please enter both nickname and age');
+      return;
+    }
+
+    const userDocRef = doc(db, 'users', user.uid);
+    await setDoc(userDocRef, {
+      nickname,
+      age,
+      email: user.email
+    });
+
+    alert('Profile saved!');
   };
 
-  // Add a new message to Firestore
-  const sendMessage = async () => {
-    if (!input.trim()) return; // Don't send empty messages
+  // Get messages from Firestore
+  const fetchMessages = async () => {
+    const snapshot = await getDocs(collection(db, 'messages'));
+    const list = snapshot.docs.map(doc => doc.data());
+    setMessages(list);
+  };
 
-    // Add a new message with the user's name and current timestamp
+  // Submit a new message
+  const sendMessage = async () => {
+    if (!input.trim()) return;
+
     await addDoc(collection(db, 'messages'), {
       text: input,
-      name: user.displayName,
+      name: nickname || user.displayName,
       timestamp: Date.now()
     });
 
-    setInput(''); // Clear the input field
-    fetchMessages(); // Refresh the message list after sending
+    setInput('');
+    fetchMessages();
   };
-
-  // Re-fetch messages any time the user logs in
-  useEffect(() => {
-    if (user) {
-      fetchMessages();
-    }
-  }, [user]);
 
   // UI rendering
   return (
     <div>
-      <h1>Firebase + React App with Google Log-in</h1>
-      {/* If user is logged in, show greeting, logout button, and messages */}
+      <h1>Firebase + React App</h1>
+
       {user ? (
         <div>
           <h2>Hello, {user.displayName}</h2>
+          <p>Email: {user.email}</p>
           <button onClick={handleLogout}>Log Out</button>
 
+          <h3>Edit Profile</h3>
+          <input
+            placeholder="Nickname"
+            value={nickname}
+            onChange={e => setNickname(e.target.value)}
+          />
+          <input
+            placeholder="Age"
+            type="number"
+            value={age}
+            onChange={e => setAge(e.target.value)}
+          />
+          <button onClick={handleSaveProfile}>Save Profile</button>
+
+          <h3>Send Message</h3>
+          <input
+            value={input}
+            onChange={e => setInput(e.target.value)}
+            placeholder="Enter your message"
+          />
+          <button onClick={sendMessage}>Send</button>
+
+          <h3>Messages</h3>
           <ul>
             {messages.map((msg, i) => (
               <li key={i}>
@@ -89,7 +139,6 @@ function App() {
           </ul>
         </div>
       ) : (
-        // If no user is logged in, show login button
         <div>
           <p>Please log in with Google to continue.</p>
           <button onClick={handleLogin}>Login with Google</button>
@@ -98,4 +147,5 @@ function App() {
     </div>
   );
 }
+
 export default App;
