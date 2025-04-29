@@ -150,7 +150,7 @@ function App() {
 {apiData1 && <p>{apiData1}</p>}
 {apiData2 && <p>{apiData2}</p>}
 
-<button onClick={fetchAdvice}>Fetch cat</button>
+<button onClick={fetchAdvice}>Fetch advice</button>
 {apiData3 && <p>{apiData3}</p>}
 
 
