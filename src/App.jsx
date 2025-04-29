@@ -19,6 +19,16 @@ function App() {
     }
   };
   
+  const fetchJoke = async () => {
+    try {
+      const response = await fetch('https://v2.jokeapi.dev/joke/Any?blacklistFlags=nsfw,religious,political,racist,sexist,explicit');
+      const data = await response.json();
+      setApiData(data.message); // "message" is the field of the image URL
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  
   
   // Track logged-in user
   const [user, setUser] = useState(null);
@@ -111,13 +121,15 @@ function App() {
     fetchMessages();
   };
 
- 
+
   // UI rendering
   return (
     <div>
       <h1>Firebase + React App</h1>
       <button onClick={fetchDogImage}>Fetch Dog Image</button>
 {apiData && <img src={apiData} alt="Random Dog" />}
+
+<button onClick={fetchJoke}>Fetch joke</button>
 
       {user ? (
         <div>
