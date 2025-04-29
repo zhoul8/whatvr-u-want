@@ -37,6 +37,16 @@ function App() {
   };
   
   
+  const fetchAdvice = async () => {
+    try {
+      const response = await fetch('https://api.adviceslip.com/advice');
+      const data = await response.json();
+      setApiData3(data.advice); // "message" is the field of the image URL
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  
   // Track logged-in user
   const [user, setUser] = useState(null);
 
@@ -139,6 +149,9 @@ function App() {
 <button onClick={fetchJoke}>Fetch joke</button>
 {apiData1 && <p>{apiData1}</p>}
 {apiData2 && <p>{apiData2}</p>}
+
+<button onClick={fetchAdvice}>Fetch advice</button>
+{apiData3 && <p>{apiData3}</p>}
 
 
       {user ? (
