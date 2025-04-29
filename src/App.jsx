@@ -13,7 +13,8 @@ function App() {
     try {
       const response = await fetch('https://dog.ceo/api/breeds/image/random');
       const data = await response.json();
-      setApiData(data.message); // "message" is the field of the image URL
+      setApiData(data.setup); // "message" is the field of the image URL
+      setApiData(data.delivery);
     } catch (error) {
       console.error('Error fetching dog image:', error);
     }
@@ -130,7 +131,7 @@ function App() {
 {apiData && <img src={apiData} alt="Random Dog" />}
 
 <button onClick={fetchJoke}>Fetch joke</button>
-{apiData && <p src={apiData}></p>}
+{apiData && <p>{apiData}</p>}
 
 
       {user ? (
