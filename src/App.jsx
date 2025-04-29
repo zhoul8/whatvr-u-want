@@ -39,9 +39,9 @@ function App() {
   
   const fetchAdvice = async () => {
     try {
-      const response = await fetch('https://api.adviceslip.com/advice');
+      const response = await fetch('https://api.thecatapi.com/v1/images/search');
       const data = await response.json();
-      setApiData3(data.advice); // "message" is the field of the image URL
+      setApiData3(data.url); // "message" is the field of the image URL
     } catch (error) {
       console.error(error);
     }
@@ -150,8 +150,8 @@ function App() {
 {apiData1 && <p>{apiData1}</p>}
 {apiData2 && <p>{apiData2}</p>}
 
-<button onClick={fetchAdvice}>Fetch advice</button>
-{apiData3 && <p>{apiData3}</p>}
+<button onClick={fetchAdvice}>Fetch cat</button>
+{apiData3 && <img src={apiData3}/>}
 
 
       {user ? (
