@@ -9,12 +9,17 @@ import { collection, addDoc, getDocs, doc, setDoc, getDoc} from 'firebase/firest
 function App() {
 
   const [apiData, setApiData] = useState('');
+  const [apiData1, setApiData1] = useState('');
+  const [apiData2, setApiData2] = useState('');
+  const [apiData3, setApiData3] = useState('');
+
+
+
   const fetchDogImage = async () => {
     try {
       const response = await fetch('https://dog.ceo/api/breeds/image/random');
       const data = await response.json();
-      setApiData(data.setup); // "message" is the field of the image URL
-      setApiData(data.delivery);
+      setApiData(data.message); // "message" is the field of the image URL
     } catch (error) {
       console.error('Error fetching dog image:', error);
     }
@@ -24,7 +29,8 @@ function App() {
     try {
       const response = await fetch('https://v2.jokeapi.dev/joke/Any?blacklistFlags=nsfw,religious,political,racist,sexist,explicit');
       const data = await response.json();
-      setApiData(data.message); // "message" is the field of the image URL
+      setApiData1(data.setup); // "message" is the field of the image URL
+      setApiData2(data.delivery);
     } catch (error) {
       console.error(error);
     }
@@ -131,7 +137,8 @@ function App() {
 {apiData && <img src={apiData} alt="Random Dog" />}
 
 <button onClick={fetchJoke}>Fetch joke</button>
-{apiData && <p>{apiData}</p>}
+{apiData1 && <p>{apiData1}</p>}
+{apiData2 && <p>{apiData2}</p>}
 
 
       {user ? (
