@@ -151,7 +151,7 @@ function App() {
 {apiData2 && <p>{apiData2}</p>}
 
 <button onClick={fetchAdvice}>Fetch advice</button>
-{apiData3 && <p>{apiData3}</p>}
+{apiData3 && <h1>{apiData3}</h1>}
 
 
       {user ? (
