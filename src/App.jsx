@@ -4,7 +4,20 @@ import { db, auth, provider } from './firebase';
 import { signInWithPopup, signOut, onAuthStateChanged } from 'firebase/auth';
 import { collection, addDoc, getDocs, doc, setDoc, getDoc} from 'firebase/firestore';
 
+const [apiData, setApiData] = useState('');
+
 function App() {
+
+  const fetchDogImage = async () => {
+    try {
+      const response = await fetch('https://dog.ceo/api/breeds/image/random');
+      const data = await response.json();
+      setApiData(data.message); // "message" is the field of the image URL
+    } catch (error) {
+      console.error('Error fetching dog image:', error);
+    }
+  };
+  
   // Track logged-in user
   const [user, setUser] = useState(null);
 
@@ -137,6 +150,8 @@ function App() {
               </li>
             ))}
           </ul>
+          <button onClick={fetchDogImage}>Fetch Dog Image</button>
+{apiData && <img src={apiData} alt="Random Dog" />}
         </div>
       ) : (
         <div>
