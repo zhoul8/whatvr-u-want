@@ -41,7 +41,7 @@ function App() {
     try {
       const response = await fetch('https://api.adviceslip.com/advice');
       const data = await response.json();
-      setApiData3(data.advice); // "message" is the field of the image URL
+      setApiData3(data.slip.advice); // "message" is the field of the image URL
     } catch (error) {
       console.error(error);
     }
